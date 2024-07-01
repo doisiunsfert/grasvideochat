@@ -1,0 +1,40 @@
+name: Unlicensed Video Detection Workflow
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 12 * * *'  # Scheduled to run daily at noon
+
+jobs:
+  video_metadata_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Download Metadata Analysis Tool
+        run: |
+          wget https://example.com/download/tool.zip
+          unzip tool.zip -d analysis_tool
+
+      - name: Run Metadata Analysis
+        run: python analysis_tool/run_analysis.py
+
+      - name: Notify Teams
+        if: failure()  # Only runs if the previous step fails
+        uses: some/messaging-action@v1
+        with:
+          username: ${{ secrets.USERNAME }}
+          token: ${{ secrets.TOKEN }}
+          message: "Unlicensed video content detected, requires review."
