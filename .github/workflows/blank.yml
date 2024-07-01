@@ -1,40 +1,32 @@
-name: Unlicensed Video Detection Workflow
+name: Cauta Video
 
 on:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: '0 12 * * *'  # Scheduled to run daily at noon
+    - cron: '0 0 * * *' # Rulează o dată pe zi la miezul nopții
 
 jobs:
-  video_metadata_analysis:
+  search_videos:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.x'
       
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 # Depinde de bibliotecile necesare pentru scraping sau accesul API-urilor
 
-      - name: Download Metadata Analysis Tool
-        run: |
-          wget https://example.com/download/tool.zip
-          unzip tool.zip -d analysis_tool
+      - name: Run search script
+        run: python search_script.py
 
-      - name: Run Metadata Analysis
-        run: python analysis_tool/run_analysis.py
-
-      - name: Notify Teams
-        if: failure()  # Only runs if the previous step fails
-        uses: some/messaging-action@v1
+      - name: Upload results
+        uses: actions/upload-artifact@v2
         with:
-          username: ${{ secrets.USERNAME }}
-          token: ${{ secrets.TOKEN }}
-          message: "Unlicensed video content detected, requires review."
+          name: search-results
+          path: search_results.txt
