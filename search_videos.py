@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup
 
 # Lista de pagini web de căutat (exemplu)
 urls = [
-    "https://example.com",
-    "https://anotherexample.com"
+    "https://xhamster.com/",
+    "https://pornhub.com"
 ]
 
-query = "Gras Videochat"
+query = "Romania Videochat"
 found_videos = []
 
 def search_videos(url, query):
